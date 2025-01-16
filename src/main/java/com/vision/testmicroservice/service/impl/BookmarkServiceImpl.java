@@ -1,5 +1,6 @@
 package com.vision.testmicroservice.service.impl;
 
+import com.vision.testmicroservice.jwt.JwtUtil;
 import com.vision.testmicroservice.model.Bookmark;
 import com.vision.testmicroservice.dto.BookmarkDTO;
 import com.vision.testmicroservice.model.User;
@@ -21,15 +22,14 @@ public class BookmarkServiceImpl implements BookmarkService {
     private UserRepository userRepository;
     @Autowired
     private BookmarkRepository bookmarkRepository;
-
-    @Value("${vision.app.jwtSecret}")
-    private String jwtSecret;
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     @Override
     public BookmarkDTO createBookmark(BookmarkDTO bookmarkDTO, HttpServletRequest request) {
         // Extract user email from the request token
-        String email = getUsernameFromRequest(request); // Extract email (from JWT token)
+        String email = jwtUtil.extractUsernameFromRequest(request); // Extract email (from JWT token)
 
         // Find user by email
         User user = userRepository.findByEmail(email)
@@ -49,27 +49,7 @@ public class BookmarkServiceImpl implements BookmarkService {
         return new BookmarkDTO(savedBookmark);
     }
 
-    public String getUsernameFromRequest(HttpServletRequest request) {
-        // Extract the "Authorization" header (Bearer token)
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7); // Remove "Bearer " prefix
 
-            // Decode the JWT token and extract the "sub" (subject) claim, which is the email
-            try {
-                Claims claims = Jwts.parser()
-                        .setSigningKey(jwtSecret)  // Use the same secret key used to sign the token
-                        .parseClaimsJws(token)
-                        .getBody();
-
-                return claims.getSubject();  // This should be the email
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to extract user info from token", e);
-            }
-        }
-
-        throw new RuntimeException("Authorization token is missing or invalid");
-    }
 
 }
 
