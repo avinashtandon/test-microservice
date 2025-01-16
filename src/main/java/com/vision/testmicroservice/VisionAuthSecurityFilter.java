@@ -17,8 +17,6 @@ import java.io.IOException;
 
 @Component
 public class VisionAuthSecurityFilter extends OncePerRequestFilter {
-    @Value("${vision.auth.url}") // URL to Vision Auth service
-    private String visionAuthUrl;
 
     private final RestTemplate restTemplate = new RestTemplate();
 

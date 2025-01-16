@@ -1,6 +1,4 @@
 package com.vision.testmicroservice.controller;
-
-import com.vision.testmicroservice.config.VisionAuthService;
 import com.vision.testmicroservice.service.TokenValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -39,7 +39,6 @@ public class TokenValidationService {
             return response.getBody() != null && response.getBody();
         } catch (Exception e) {
             // Log the error and return false if validation fails
-            System.out.println("Error during token validation: " + e.getMessage());
             return false;
         }
     }
